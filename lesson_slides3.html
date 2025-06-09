@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>論理国語特別プログラム - 物語るという欲望</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transition: left 0.5s ease-in-out;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        
+        .slide.active {
+            left: 0;
+        }
+        
+        .slide.prev {
+            left: -100%;
+        }
+        
+        .program-overview {
+            margin-top: 30px;
+        }
+        
+        .program-item {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+            transition: transform 0.3s;
+        }
+        
+        .program-item:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .program-item .date {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .program-item h4 {
+            color: #87ceeb;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+        
+        .program-item p {
+            font-size: 1em;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .content a {
+            color: #87ceeb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .content a:hover {
+            color: #ffd700;
+            text-decoration: underline;
+        }
+        
+        .slide h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .slide h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .slide h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #87ceeb;
+        }
+        
+        .content {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content p, .content li {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .content ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .content li:before {
+            content: "▸ ";
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .highlight {
+            background: rgba(255,215,0,0.3);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .diagram-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            transition: transform 0.3s;
+        }
+        
+        .diagram-box:hover {
+            transform: scale(1.05);
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #ffd700;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 1.2em;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+        
+        .question-box {
+            background: rgba(135,206,235,0.2);
+            border-left: 5px solid #87ceeb;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .theory-box {
+            background: rgba(255,215,0,0.1);
+            border: 2px dashed #ffd700;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+        }
+        
+        .activity-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .activity-timeline::before {
+            content: "";
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ffd700;
+            z-index: -1;
+        }
+        
+        .timeline-item {
+            background: #2a5298;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+        
+        .timeline-item h4 {
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        /* Title slide specific styles */
+        .title-slide {
+            background: radial-gradient(ellipse at center, #2a5298 0%, #1a1a1a 100%);
+        }
+        
+        .title-slide h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffd700, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.8em;
+            color: #87ceeb;
+            margin-bottom: 40px;
+        }
+        
+        /* Specific slide backgrounds */
+        .slide1 { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .slide2 { background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%); }
+        .slide3 { background: linear-gradient(135deg, #1a2a4a 0%, #2a5298 100%); }
+        .slide4 { background: linear-gradient(135deg, #2a5298 0%, #3a6ab8 100%); }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-number">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+        
+        <!-- Title Slide -->
+        <div class="slide active title-slide">
+            <h1>物語るという欲望</h1>
+            <p class="subtitle">演劇作品を通じた解釈の多様性</p>
+            <div class="content">
+                <h3>論理国語 特別プログラム</h3>
+                <p>内田樹「物語るという欲望」× 岸田國士「恋愛恐怖病」</p>
+                <p style="margin-top: 20px; color: #87ceeb;">関東第一高等学校　担当：川合智先生</p>
+            </div>
+        </div>
+        
+        <!-- Program Overview Slide -->
+        <div class="slide slide1">
+            <h2>プログラム全体像</h2>
+            <div class="content">
+                <h3>4回の授業で「読むこと」の本質に迫る</h3>
+                <div class="program-overview">
+                    <div class="program-item">
+                        <div class="date">6月5日（木）</div>
+                        <h4>第一回目：「物語るという欲望」を読む</h4>
+                        <p>内田樹の論考を精読し、ロラン・バルトの理論を学ぶ</p>
+                    </div>
+                    <div class="program-item">
+                        <div class="date">6月12日（木）</div>
+                        <h4>第二回目：演劇作品の鑑賞</h4>
+                        <p>岸田國士「恋愛恐怖病」を読み、映像を鑑賞する</p>
+                    </div>
+                    <div class="program-item">
+                        <div class="date">6月19日（木）</div>
+                        <h4>第三回目：演劇作品の解釈論</h4>
+                        <p>演出の工夫を分析し、解釈の重層性を理解する</p>
+                    </div>
+                    <div class="program-item">
+                        <div class="date">6月23日（月）</div>
+                        <h4>第四回目：総合的考察</h4>
+                        <p>理論と実践を結びつけ、内田樹の論考を読み直す</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 第一回目 スライド -->
+        <div class="slide slide1">
+            <h2>第一回目：「物語るという欲望」を読む</h2>
+            <div class="content">
+                <h3>今日の問い</h3>
+                <div class="question-box">
+                    <p>なぜ私たちは物語を読むのでしょうか？</p>
+                    <p>物語を読むとき、私たちは何をしているのでしょうか？</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide1">
+            <h2>内田樹の主張</h2>
+            <div class="content">
+                <h3>キーワード①：<span class="highlight">観客の参与</span></h3>
+                <ul>
+                    <li>読者は受動的に物語を受け取るだけではない</li>
+                    <li>読者は能動的に「意味を書き加える」存在</li>
+                    <li>物語は読者との協働作業で完成する</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide1">
+            <h2>ロラン・バルトの「反・物語」理論</h2>
+            <div class="content">
+                <div class="diagram">
+                    <div class="diagram-box">
+                        <h4>物語の欲望</h4>
+                        <p>終わり（エンド）へ<br>向かって進む力</p>
+                    </div>
+                    <span class="arrow">→</span>
+                    <div class="diagram-box">
+                        <h4>計算外のイベント</h4>
+                        <p>物語の進行を<br>妨げる要因</p>
+                    </div>
+                    <span class="arrow">→</span>
+                    <div class="diagram-box">
+                        <h4>読者の架橋</h4>
+                        <p>意味を通そうとする<br>解釈の営み</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide1">
+            <h2>バルトの「反・物語」をもっと深く</h2>
+            <div class="content">
+                <h3>さらに重要な2つのポイント</h3>
+                <div class="theory-box">
+                    <h4>①「終点」を見えなくする</h4>
+                    <p>物語をゴールへ向かわせる力そのものが、細切れに分散されてしまう。<br>
+                    読者は「いまどこにいるの？」という混乱に投げ込まれる。</p>
+                </div>
+                <div class="theory-box" style="margin-top: 20px;">
+                    <h4>②読者が意味を「生み出す」</h4>
+                    <p>読者は作者の意図を「埋める」だけでなく、<br>
+                    バラバラの断片を自由に結びつけて、<br>
+                    <span class="highlight">自分だけの物語を作り出す</span>存在になる。</p>
+                </div>
+                <p style="margin-top: 20px; font-size: 1.1em;">つまり...読者こそが物語の主役！</p>
+            </div>
+        </div>
+        
+        <div class="slide slide1">
+            <h2>第一回目のまとめ</h2>
+            <div class="content">
+                <div class="theory-box">
+                    <h3>覚えておきたいポイント</h3>
+                    <ul>
+                        <li>読者は物語に「参与」する存在</li>
+                        <li>「計算外のイベント」が解釈を生む</li>
+                        <li>読者の解釈が物語を豊かにする</li>
+                    </ul>
+                </div>
+                <p>次回：実際に演劇作品を鑑賞して、この理論を体験してみましょう！</p>
+            </div>
+        </div>
+        
+        <!-- 第二回目 スライド -->
+        <div class="slide slide2">
+            <h2>第二回目：演劇作品の鑑賞</h2>
+            <div class="content">
+                <h3>岸田國士「恋愛恐怖病」</h3>
+                <ul>
+                    <li>大正から昭和初期に活躍した劇作家</li>
+                    <li>心理的リアリズムの追求</li>
+                    <li>現代的な男女関係の描写</li>
+                </ul>
+                <p style="margin-top: 20px; font-size: 1em;">
+                    <a href="https://www.aozora.gr.jp/cards/001154/files/52087_46691.html" style="color: #87ceeb;">
+                        青空文庫で読む →
+                    </a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="slide slide2">
+            <h2>鑑賞のポイント</h2>
+            <div class="content">
+                <div class="activity-timeline">
+                    <div class="timeline-item">
+                        <h4>戯曲を読む</h4>
+                        <p>テキストから<br>イメージする</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>映像を観る</h4>
+                        <p>演出された<br>作品を鑑賞</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>比較する</h4>
+                        <p>イメージと<br>演出の違い</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide2">
+            <h2>ワークシートの記入</h2>
+            <div class="content">
+                <h3>率直に感じたことを書いてみよう</h3>
+                <div class="question-box">
+                    <p>1. 最も印象に残った場面は？</p>
+                    <p>2. 登場人物をどう解釈しましたか？</p>
+                    <p>3. 疑問に思ったことは？</p>
+                </div>
+                <p>※正解はありません。あなたの解釈を大切にしてください。</p>
+            </div>
+        </div>
+        
+        <!-- 第三回目 スライド -->
+        <div class="slide slide3">
+            <h2>第三回目：演劇作品の解釈論</h2>
+            <div class="content">
+                <h3>みんなの解釈を見てみよう</h3>
+                <ul>
+                    <li>同じ作品を観ても、解釈は人それぞれ</li>
+                    <li>なぜ解釈に違いが生まれるのか？</li>
+                    <li>その違いにこそ価値がある</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide3">
+            <h2>演劇における解釈の重層性</h2>
+            <div class="content">
+                <div class="diagram">
+                    <div class="diagram-box">
+                        <h4>作者</h4>
+                        <p>岸田國士の<br>意図</p>
+                    </div>
+                    <div class="diagram-box">
+                        <h4>演出家</h4>
+                        <p>作品の<br>再解釈</p>
+                    </div>
+                    <div class="diagram-box">
+                        <h4>俳優</h4>
+                        <p>役の<br>体現</p>
+                    </div>
+                    <div class="diagram-box">
+                        <h4>観客</h4>
+                        <p>最終的な<br>解釈</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide3">
+            <h2>演出の工夫を分析しよう</h2>
+            <div class="content">
+                <h3>注目すべき要素</h3>
+                <ul>
+                    <li><span class="highlight">照明</span>：場面の雰囲気を作る</li>
+                    <li><span class="highlight">音響</span>：感情を増幅させる</li>
+                    <li><span class="highlight">俳優の動き</span>：言葉にない意味を表現</li>
+                    <li><span class="highlight">舞台美術</span>：世界観を構築</li>
+                </ul>
+                <p>これらの要素が総合されて、一つの解釈が生まれる</p>
+            </div>
+        </div>
+        
+        <!-- 第四回目 スライド -->
+        <div class="slide slide4">
+            <h2>第四回目：総合的考察</h2>
+            <div class="content">
+                <h3>理論と実践を結びつける</h3>
+                <div class="theory-box">
+                    <p>「恋愛恐怖病」を観たとき、あなたは...</p>
+                    <ul>
+                        <li>どんな「計算外のイベント」に出会いましたか？</li>
+                        <li>それをどう「架橋」しましたか？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>「物語るという欲望」を読み直す</h2>
+            <div class="content">
+                <h3>演劇体験を経て、内田樹の論考を再読すると...</h3>
+                <div class="question-box">
+                    <p>あなたは確かに「観客」として「参与」していた！</p>
+                    <ul>
+                        <li>戯曲を読んだときのイメージ</li>
+                        <li>映像を観たときの驚き</li>
+                        <li>他の人の解釈を聞いたときの発見</li>
+                    </ul>
+                </div>
+                <p style="margin-top: 20px;">これらすべてが、あなたが物語に「意味を書き加えた」証拠です</p>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>演劇における「物語るという欲望」</h2>
+            <div class="content">
+                <div class="diagram">
+                    <div class="diagram-box">
+                        <h4>演出家の欲望</h4>
+                        <p>戯曲を<br>「自分の物語」<br>として語る</p>
+                    </div>
+                    <div class="diagram-box">
+                        <h4>俳優の欲望</h4>
+                        <p>役を通じて<br>「生きた物語」<br>を体現する</p>
+                    </div>
+                    <div class="diagram-box">
+                        <h4>観客の欲望</h4>
+                        <p>舞台を観て<br>「自分の物語」<br>を発見する</p>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; text-align: center; font-size: 1.2em;">
+                    みんなが「物語るという欲望」を持っている！
+                </p>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>理論の深化：新たな気づき</h2>
+            <div class="content">
+                <h3>演劇体験を通じて見えてきたこと</h3>
+                <ul>
+                    <li><span class="highlight">「計算外のイベント」</span>は作品の豊かさの源</li>
+                    <li>解釈の違いは「読み残し」ではなく<span class="highlight">「読み足し」</span></li>
+                    <li>物語は完成品ではなく、<span class="highlight">永遠の生成過程</span></li>
+                </ul>
+                <div class="theory-box" style="margin-top: 20px;">
+                    <p>内田樹の言葉が、体験を通じて「生きた知識」になった</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>渡辺一夫の理論</h2>
+            <div class="content">
+                <h3>「読み残し」の存在</h3>
+                <ul>
+                    <li>個人の経験が読書に制限を与える</li>
+                    <li>すべての読書には「読み残し」がある</li>
+                    <li>だからこそ、他者の読みに価値がある</li>
+                </ul>
+                <div class="question-box">
+                    <p>あなたの「読み残し」は何だったでしょうか？</p>
+                    <p>他の人の解釈から、何を発見しましたか？</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>最終レポート</h2>
+            <div class="content">
+                <h3>テーマ：私の解釈と他者の解釈</h3>
+                <h4>－「恋愛恐怖病」を通じて－</h4>
+                <ul>
+                    <li>800字程度</li>
+                    <li>理論を踏まえた考察を含める</li>
+                    <li>具体的な場面を挙げて論じる</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide slide4">
+            <h2>単元のまとめ</h2>
+            <div class="content">
+                <h3>学んだこと</h3>
+                <ul>
+                    <li>読者は物語に能動的に「参与」する</li>
+                    <li>解釈の多様性が作品を豊かにする</li>
+                    <li>自分の「読み」の限界と可能性を知る</li>
+                </ul>
+                <div class="theory-box">
+                    <p>これからの読書では...</p>
+                    <p>自分の解釈を大切にしながら、<br>他者の解釈にも耳を傾けてみましょう</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" onclick="prevSlide()">前へ</button>
+            <button class="nav-btn" onclick="nextSlide()">次へ</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides.forEach(slide => {
+                slide.classList.remove('active', 'prev');
+            });
+            
+            if (n >= totalSlides) {
+                currentSlide = 0;
+            } else if (n < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = n;
+            }
+            
+            slides[currentSlide].classList.add('active');
+            if (currentSlide > 0) {
+                slides[currentSlide - 1].classList.add('prev');
+            }
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) prevSlide();
+        }
+    </script>
+</body>
+</html>
