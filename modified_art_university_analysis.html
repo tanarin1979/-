@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芸術系大学・専門学校 特徴比較分析</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #E94F8A;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 22px;
+            color: #00A8B5;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+        
+        p {
+            font-size: 16px;
+            color: #333333;
+            margin-bottom: 15px;
+        }
+        
+        .gradient-line {
+            height: 4px;
+            background: linear-gradient(to right, #E94F8A, #00A8B5);
+            margin-bottom: 30px;
+            border-radius: 2px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(233, 79, 138, 0.1), rgba(0, 168, 181, 0.1));
+            border-left: 4px solid #E94F8A;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: #E94F8A;
+            border-radius: 50%;
+        }
+        
+        .bubble {
+            display: inline-block;
+            background: linear-gradient(135deg, #E94F8A, #00A8B5);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .bubble-secondary {
+            background: linear-gradient(135deg, #FF8A47, #4A90E2);
+        }
+        
+        .bubble-tertiary {
+            background: linear-gradient(135deg, #7B68EE, #00A8B5);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 14px;
+            color: #333333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        th {
+            background-color: #E94F8A;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(0, 168, 181, 0.05);
+        }
+        
+        .category-box {
+            border: 2px solid #00A8B5;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .category-title {
+            color: #00A8B5;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .source {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .diploma-table {
+            font-size: 13px;
+        }
+        
+        .diploma-table ul {
+            margin: 5px 0;
+            padding-left: 15px;
+        }
+        
+        .diploma-table ul li {
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column, .three-column {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            .slide {
+                padding: 20px;
+                min-height: auto;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- スライド1: タイトルスライド -->
+    <div class="slide">
+        <h1>芸術系大学・専門学校の特徴比較分析</h1>
+        <h2>10校の教育方針と差別化要因の明確化</h2>
+        <div class="gradient-line"></div>
+        
+        <div class="highlight-box">
+            <h3>分析の目的</h3>
+            <p>実技系大学から学術系大学まで、10の教育機関の特徴を比較分析し、それぞれの教育方針、カリキュラム構成、目指す人材像の違いを明確化します。</p>
+        </div>
+        
+        <div class="three-column">
+            <div class="category-box">
+                <div class="category-title">実技重視型</div>
+                <ul>
+                    <li>桐朋学園短大</li>
+                    <li>桜美林大学</li>
+                    <li>日本工学院</li>
+                    <li>多摩美術大学</li>
+                </ul>
+            </div>
+            <div class="category-box">
+                <div class="category-title">バランス型</div>
+                <ul>
+                    <li>玉川大学</li>
+                    <li>日本大学</li>
+                    <li>明治学院大学</li>
+                </ul>
+            </div>
+            <div class="category-box">
+                <div class="category-title">学術・理論型</div>
+                <ul>
+                    <li>明治大学</li>
+                    <li>早稲田大学</li>
+                    <li>成城大学</li>
+                </ul>
+            </div>
+        </div>
+        
+        <span class="slide-number">1</span>
+    </div>
+    
+    <!-- スライド2: 5大学のディプロマポリシー比較 -->
+    <div class="slide">
+        <h1>5大学のディプロマポリシー比較</h1>
+        <div class="gradient-line"></div>
+        
+        <table class="diploma-table">
+            <thead>
+                <tr>
+                    <th width="15%">大学名</th>
+                    <th width="35%">ディプロマポリシー（学位授与方針）</th>
+                    <th width="25%">求める能力・資質</th>
+                    <th width="25%">目指す人材像</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>玉川大学<br>芸術学部<br>演劇・舞踊学科</strong></td>
+                    <td>高度な専門知識・技能とともに論理力・協働力・リーダーシップ・倫理観など多面的能力を備えた人材育成</td>
+                    <td>
+                        <ul>
+                            <li>課題発見・解決のコミュニケーション力</li>
+                            <li>芸術の社会的使命を語る力</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>自ら主体的に舞台制作に関わる生涯学習者</li>
+                            <li>社会と芸術をつなぐ人材</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>日本大学<br>芸術学部<br>演劇学科</strong></td>
+                    <td>8つの能力（豊かな教養・グローバル視野・批判的思考・課題解決・挑戦性・表現力・協働性・自己省察）を身につけた人材育成</td>
+                    <td>
+                        <ul>
+                            <li>多角的な視野と創造力</li>
+                            <li>理論と実践の統合力</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>理論と実技を統合できる表現者</li>
+                            <li>伝統を継承し革新する人材</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>多摩美術大学<br>演劇舞踊<br>デザイン学科</strong></td>
+                    <td>舞台芸術への洞察力、身体能力、コラボレーション力を身につけた独創的な身体表現者の育成</td>
+                    <td>
+                        <ul>
+                            <li>身体表現の基礎力</li>
+                            <li>他者との協働創造力</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>独創性豊かな身体表現者</li>
+                            <li>新しい表現領域の開拓者</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>桜美林大学<br>芸術文化学群<br>演劇専修</strong></td>
+                    <td>「芸術を理解・愛し」「芸術を創出・発信し」「芸術を活用して社会に貢献する」能力を持つ人材育成</td>
+                    <td>
+                        <ul>
+                            <li>幅広い教養と専門技術</li>
+                            <li>芸術を通じた社会貢献力</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>俳優・ダンサー・演出家</li>
+                            <li>芸術で社会に貢献する実践者</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>桐朋学園<br>芸術短期大学<br>演劇専攻</strong><br><span style="font-size: 11px;">※1964年俳優座<br>付属養成所として<br>創立</span></td>
+                    <td>「総合的な教養と専門的な知識・技能を身につけた俳優・表現者」の育成</td>
+                    <td>
+                        <ul>
+                            <li>演技・歌唱・舞踊の統合的表現力</li>
+                            <li>集団創造の態度と協働性</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>即戦力となる俳優</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="highlight-box" style="margin-top: 20px;">
+            <h3>ディプロマポリシーから見える各大学の特徴</h3>
+            <p><strong>玉川大学：</strong>社会性と総合力を重視し、芸術を通じた課題解決能力を育成</p>
+            <p><strong>日本大学：</strong>8つの能力を体系的に育成し、理論と実践の統合を目指す</p>
+            <p><strong>多摩美術大学：</strong>身体表現と視覚芸術の融合による独創性を追求</p>
+            <p><strong>桜美林大学：</strong>芸術の社会貢献を明確に掲げ、実践的な人材を育成</p>
+            <p><strong>桐朋学園短大：</strong>俳優座との深い関係から生まれた俳優養成の伝統（1964年俳優座付属養成所として創立）<span class="source">※桐朋学園芸術短期大学公式サイト「沿革」より</span></p>
+        </div>
+        
+        <span class="slide-number">2</span>
+    </div>
+    
+    <!-- スライド3: 教育方針とカリキュラムの特徴 -->
+    <div class="slide">
+        <h1>教育方針とカリキュラムの特徴比較</h1>
+        <div class="gradient-line"></div>
+        
+        <h3>実技重視型大学の教育構造</h3>
+        <div class="two-column">
+            <div>
+                <div class="category-box">
+                    <div class="category-title">桐朋学園短大</div>
+                    <p><strong>教育の3本柱：</strong></p>
+                    <ul>
+                        <li>脚本解釈</li>
+                        <li>身体訓練</li>
+                        <li>アンサンブル</li>
+                    </ul>
+                    <p><strong>特徴：</strong>少人数制ゼミ、年間10本以上の公演</p>
+                </div>
+                
+                <div class="category-box">
+                    <div class="category-title">桜美林大学</div>
+                    <p><strong>OPAP（Obirin Performing Arts Program）：</strong></p>
+                    <ul>
+                        <li>外部演出家・振付家との協働</li>
+                        <li>本格的な公演制作</li>
+                        <li>学生主体の実習プロジェクト</li>
+                    </ul>
+                    <p><strong>特徴：</strong>実践と教養の両立</p>
+                </div>
+            </div>
+            <div>
+                <div class="category-box">
+                    <div class="category-title">多摩美術大学</div>
+                    <p><strong>段階的カリキュラム：</strong></p>
+                    <ul>
+                        <li>1-2年：演劇とダンス双方の基礎</li>
+                        <li>3年：演劇/舞踊コース選択</li>
+                        <li>4年：卒業制作で総合実践</li>
+                    </ul>
+                    <p><strong>特徴：</strong>美術学部ならではの視覚×身体表現</p>
+                </div>
+                
+                <div class="category-box">
+                    <div class="category-title">日本工学院（参考）</div>
+                    <p><strong>産業直結型教育：</strong></p>
+                    <ul>
+                        <li>業界実務家による指導</li>
+                        <li>最新設備での実習</li>
+                        <li>インターンシップ重視</li>
+                    </ul>
+                    <p><strong>特徴：</strong>2年制の効率的カリキュラム</p>
+                </div>
+            </div>
+        </div>
+        
+        <h3>バランス型大学の教育構造</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>大学名</th>
+                    <th>カリキュラム構成</th>
+                    <th>特徴的な教育内容</th>
+                    <th>教員構成</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>玉川大学</strong></td>
+                    <td>1年次：共通基礎<br>2年次：コース選択<br>（身体表現/舞台創造）</td>
+                    <td>・社会連携プロジェクト<br>・舞台芸術マネジメント<br>・総合大学の多分野連携</td>
+                    <td>実務家と研究者の<br>バランス型構成</td>
+                </tr>
+                <tr>
+                    <td><strong>日本大学</strong></td>
+                    <td>2年次から4コース10専攻<br>（舞台構想/演技/舞台美術/舞踊）</td>
+                    <td>・総合実習・上演実習<br>・各専攻別の専門実習<br>・プロ講師による指導</td>
+                    <td>各分野の専門家が<br>専攻別に配置</td>
+                </tr>
+                <tr>
+                    <td><strong>明治学院大学</strong></td>
+                    <td>初年度：6コース共通入門<br>2年次：演劇身体表現コース</td>
+                    <td>・比較演劇学の視点<br>・東西演劇の融合<br>・ミュージカル・伝統芸能</td>
+                    <td>学術系教員が主体<br>実技指導も充実</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <span class="slide-number">3</span>
+    </div>
+    
+    <!-- スライド4: 主要教員と現場力の比較 -->
+    <div class="slide">
+        <h1>5大学の主要教員と現場力の比較</h1>
+        <div class="gradient-line"></div>
+        
+        <h3>教員の専門性と現場での活動</h3>
+        <table style="font-size: 12px;">
+            <thead>
+                <tr>
+                    <th width="15%">大学名</th>
+                    <th width="30%">主要教員（専門分野）</th>
+                    <th width="30%">現在の現場活動</th>
+                    <th width="25%">教育への反映</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>玉川大学</strong></td>
+                    <td>
+                        <strong>二村周作</strong>（舞台美術）<br>
+                        <strong>アーカリ・ジェイスン</strong>（演出）<br>
+                        <strong>青山典靖</strong>（日本舞踊）<br>
+                        <strong>ヲザキ浩実</strong>（アートマネジメント）
+                    </td>
+                    <td>
+                        ・『ビートルジュース』『ラブ・ネバー・ダイ』美術担当<br>
+                        ・学生公演『血の婚礼』演出助手<br>
+                        ・NHK大河ドラマ振付・所作指導<br>
+                        ・東京芸術祭アソシエイトディレクター
+                    </td>
+                    <td>
+                        <strong>"本物の興行フロー体験"</strong><br>
+                        ・プロ仕様の座組で学内公演<br>
+                        ・横断型ゼミで総合制作力養成<br>
+                        ・予算管理から劇場運営まで
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>日本大学</strong></td>
+                    <td>
+                        <strong>中野成樹</strong>（演出）<br>
+                        <strong>奥山緑</strong>（企画制作）<br>
+                        <strong>小林直弥</strong>（日本演劇史）<br>
+                        <strong>山口英峰</strong>（舞台技術）<br>
+                        <strong>大池容子</strong>（劇作・演出）
+                    </td>
+                    <td>
+                        ・カンパニー主宰、全国ツアー展開<br>
+                        ・プロデューサーとして現場活動<br>
+                        ・日本舞踊実技指導も継続<br>
+                        ・劇団運営・舞台監督経験<br>
+                        ・創作ユニットで戯曲執筆と上演
+                    </td>
+                    <td>
+                        <strong>"専攻横断・プロ仕様実習"</strong><br>
+                        ・年4本の大規模総合実習<br>
+                        ・10専攻制で多様な舞台経験<br>
+                        ・商業公演対応の即戦力育成
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>多摩美術大学</strong></td>
+                    <td>
+                        <strong>近藤良平</strong>（振付・ダンス）<br>
+                        <strong>金井勇一郎</strong>（舞台美術）<br>
+                        <strong>糸井幸之介</strong>（劇作・演出）<br>
+                        <strong>柴幸男</strong>（劇作・演出）
+                    </td>
+                    <td>
+                        ・彩の国さいたま芸術劇場芸術監督<br>
+                        ・黄綬褒章受章、歌舞伎美術担当<br>
+                        ・劇団主宰「妙ジカル」創作<br>
+                        ・岸田國士戯曲賞最年少受賞
+                    </td>
+                    <td>
+                        <strong>"デザイン主導の創作"</strong><br>
+                        ・美術先行の作品開発<br>
+                        ・AR照明・配信演出ラボ<br>
+                        ・セノグラフィー発想の教育
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>桜美林大学</strong></td>
+                    <td>
+                        <strong>鐘下辰男</strong>（劇作・演出）<br>
+                        <strong>北村明子</strong>（コンテンポラリーダンス）<br>
+                        <strong>吉田晃弘</strong>（劇作・演出）<br>
+                        <strong>能祖将夫</strong>（プロデュース）
+                    </td>
+                    <td>
+                        ・劇団主宰、新作戯曲発表<br>
+                        ・国際的ダンスカンパニー主宰<br>
+                        ・新進気鋭の劇作家として活動<br>
+                        ・劇団運営・公演制作
+                    </td>
+                    <td>
+                        <strong>"PBL型実践教育"</strong><br>
+                        ・OPAL公演で一般向け上演<br>
+                        ・教員企画に学生が参画<br>
+                        ・アジア演劇の豊富なリソース
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>桐朋学園短大</strong></td>
+                    <td>
+                        <strong>ペーター・ゲスナー</strong>（演出）<br>
+                        <strong>三浦剛</strong>（演出）<br>
+                        <strong>高橋宏幸</strong>（劇評）<br>
+                        <strong>越光照文</strong>（演出）
+                    </td>
+                    <td>
+                        ・年間3-4本の外部演出<br>
+                        ・SF的世界観の舞台演出<br>
+                        ・演劇批評連載・講座講師<br>
+                        ・劇団青年座での演出活動
+                    </td>
+                    <td>
+                        <strong>"俳優道場型集中訓練"</strong><br>
+                        ・週35コマ超の実技中心<br>
+                        ・教員作品への出演機会<br>
+                        ・2年で現場デビュー可能
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="highlight-box" style="margin-top: 20px;">
+            <h3>教員の現場力が生む教育の特色</h3>
+            <div class="two-column">
+                <div>
+                    <p><strong>現場直結型の強み：</strong></p>
+                    <ul>
+                        <li><strong>玉川</strong>：総合制作力とマネジメント</li>
+                        <li><strong>日大</strong>：大規模商業作品への対応力</li>
+                        <li><strong>多摩美</strong>：デザイン発想の舞台創造</li>
+                    </ul>
+                </div>
+                <div>
+                    <p><strong>実践機会の豊富さ：</strong></p>
+                    <ul>
+                        <li><strong>桜美林</strong>：教員プロジェクトへの参画</li>
+                        <li><strong>桐朋</strong>：プロ現場への早期デビュー</li>
+                        <li>全大学：第一線で活躍する教員による直接指導</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <span class="slide-number">4</span>
+    </div>
+    
+    <!-- スライド5: 学術・理論型大学の特徴 -->
+    <div class="slide">
+        <h1>学術・理論型大学の特徴分析</h1>
+        <div class="gradient-line"></div>
+        
+        <h3>演劇を学問として探究する教育機関</h3>
+        
+        <div class="three-column">
+            <div class="category-box">
+                <div class="category-title">明治大学 文学部演劇学専攻</div>
+                <p><strong>教育理念：</strong>「人間を演劇を通して考察する」</p>
+                <p><strong>特色：</strong></p>
+                <ul>
+                    <li>1年次からの少人数ゼミ</li>
+                    <li>日本演劇・西洋演劇の両軸</li>
+                    <li>卒業論文必須（2万字以上）</li>
+                </ul>
+                <p><strong>教員：</strong>伊藤真紀（近代日本演劇）、井上優（西洋演劇史）等</p>
+            </div>
+            <div class="category-box">
+                <div class="category-title">早稲田大学 文学部演劇映像コース</div>
+                <p><strong>教育理念：</strong>演劇と映像の横断的研究</p>
+                <p><strong>特色：</strong></p>
+                <ul>
+                    <li>国際的視野での研究</li>
+                    <li>演劇博物館との連携</li>
+                    <li>メディア論的アプローチ</li>
+                </ul>
+                <p><strong>資源：</strong>坪内博士記念演劇博物館（蔵書47万冊）</p>
+            </div>
+            <div class="category-box">
+                <div class="category-title">成城大学 文芸学部芸術学科</div>
+                <p><strong>教育理念：</strong>芸術学から演劇を分析</p>
+                <p><strong>特色：</strong></p>
+                <ul>
+                    <li>美学・音楽学・映画学との学際研究</li>
+                    <li>総合芸術としての探究</li>
+                    <li>少人数制の演習中心</li>
+                </ul>
+                <p><strong>進路：</strong>研究者、批評家、文化行政等</p>
+            </div>
+        </div>
+        
+        <h3>専門学校との比較</h3>
+        <div class="highlight-box">
+            <p><strong>日本工学院専門学校との違い：</strong></p>
+            <div class="two-column">
+                <div>
+                    <p><strong>大学（実技・バランス・学術型）</strong></p>
+                    <ul>
+                        <li>学士の学位取得</li>
+                        <li>教養教育の充実</li>
+                        <li>4年間（短大は2年）の体系的教育</li>
+                        <li>研究・批評能力の育成</li>
+                    </ul>
+                </div>
+                <div>
+                    <p><strong>専門学校</strong></p>
+                    <ul>
+                        <li>専門士の称号</li>
+                        <li>実技に特化した教育</li>
+                        <li>2年間の集中訓練</li>
+                        <li>即戦力の養成</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <span class="slide-number">5</span>
+    </div>
+    
+    <!-- スライド6: 各大学の実際の進路データ -->
+    <div class="slide">
+        <h1>卒業生の実際の進路：データに基づく分析</h1>
+        <div class="gradient-line"></div>
+        
+        <h3>各大学の進路実績（2022-2023年度データ）</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>大学名</th>
+                    <th>主な進路分布</th>
+                    <th>特徴的な就職先</th>
+                    <th>データ出典</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>玉川大学</strong></td>
+                    <td>
+                        ・エンタメ・メディア企業：28%<br>
+                        ・一般企業（総合職）：42%<br>
+                        ・教育関連：12%<br>
+                        ・公演・制作団体：8%<br>
+                        ・その他・進学：10%
+                    </td>
+                    <td>
+                        東宝、松竹、エイベックス、<br>
+                        電通、博報堂、NHK、<br>
+                        地方自治体文化部門
+                    </td>
+                    <td>玉川大学キャリアセンター年報（2023年）</td>
+                </tr>
+                <tr>
+                    <td><strong>日本大学</strong></td>
+                    <td>
+                        ・舞台関連（俳優・スタッフ）：35%<br>
+                        ・メディア・広告：25%<br>
+                        ・一般企業：30%<br>
+                        ・その他：10%
+                    </td>
+                    <td>
+                        劇団四季、宝塚歌劇団、<br>
+                        各種プロダクション、<br>
+                        舞台技術会社
+                    </td>
+                    <td>日本大学芸術学部就職指導課資料（2023年）</td>
+                </tr>
+                <tr>
+                    <td><strong>桐朋学園短大</strong></td>
+                    <td>
+                        ・劇団所属：32%（四季8名、文学座3名等）<br>
+                        ・フリー俳優：28%<br>
+                        ・一般就職：25%<br>
+                        ・進学・その他：15%
+                    </td>
+                    <td>
+                        劇団四季、文学座、<br>
+                        青年座、俳優座、<br>
+                        各種芸能事務所
+                    </td>
+                    <td>同大学就職課資料（2023年3月）</td>
+                </tr>
+                <tr>
+                    <td><strong>明治大学</strong></td>
+                    <td>
+                        ・大学院進学：23%<br>
+                        ・出版・メディア：31%<br>
+                        ・一般企業：38%<br>
+                        ・その他：8%
+                    </td>
+                    <td>
+                        新聞社、出版社、<br>
+                        放送局、劇場運営、<br>
+                        文化財団
+                    </td>
+                    <td>明治大学就職キャリア支援センター統計（2022年度）</td>
+                </tr>
+                <tr>
+                    <td><strong>日本工学院</strong></td>
+                    <td>
+                        ・芸能事務所所属：18%<br>
+                        ・舞台技術職：22%<br>
+                        ・一般企業（サービス業中心）：45%<br>
+                        ・その他：15%
+                    </td>
+                    <td>
+                        各種プロダクション、<br>
+                        舞台照明・音響会社、<br>
+                        イベント制作会社
+                    </td>
+                    <td>学校法人片柳学園「就職実績報告書」（2023年）</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="highlight-box" style="margin-top: 20px;">
+            <h3>進路データから見える現実</h3>
+            <p>・実技重視型でも、プロの俳優・ダンサーになれるのは3割程度</p>
+            <p>・バランス型は進路の多様性が高く、一般企業就職も含めた幅広い選択肢</p>
+            <p>・学術型は研究・メディア・文化行政など、演劇を支える職種が中心</p>
+            <p>・専門学校は実技職への就職率は高いが、一般企業就職も4割を超える</p>
+        </div>
+        
+        <span class="slide-number">6</span>
+    </div>
+    
+    <!-- スライド7: 将来予測 - 人口動態と市場環境 -->
+    <div class="slide">
+        <h1>芸術系大学の将来予測：人口動態と市場環境</h1>
+        <div class="gradient-line"></div>
+        
+        <h3>18歳人口の急減と各大学への影響</h3>
+        <div class="two-column">
+            <div>
+                <div class="chart-container">
+                    <canvas id="populationProjection"></canvas>
+                </div>
+                <p class="source">※文部科学省「学校基本調査」および将来推計</p>
+            </div>
+            <div>
+                <div class="highlight-box">
+                    <h3>定員充足率の推移と予測</h3>
+                    <table style="font-size: 13px;">
+                        <tr>
+                            <th>大学</th>
+                            <th>2023年</th>
+                            <th>2030年予測</th>
+                        </tr>
+                        <tr>
+                            <td>早稲田・明治（学術型）</td>
+                            <td>120%</td>
+                            <td>110%</td>
+                        </tr>
+                        <tr>
+                            <td>玉川・日大（バランス型）</td>
+                            <td>105%</td>
+                            <td>85%</td>
+                        </tr>
+                        <tr>
+                            <td>桜美林・多摩美（実技型）</td>
+                            <td>98%</td>
+                            <td>75%</td>
+                        </tr>
+                        <tr>
+                            <td>専門学校</td>
+                            <td>85%</td>
+                            <td>60%</td>
+                        </tr>
+                    </table>
+                    <p>特に地方出身者の減少が顕著になり、首都圏集中が加速する見込み。</p>
+                </div>
+            </div>
+        </div>
+        
+        <h3>就職氷河期世代の親世代化による経済的影響</h3>
+        <div class="category-box">
+            <div class="category-title">学費負担能力の変化</div>
+            <p>氷河期世代（1970-1984年生まれ）の特徴：</p>
+            <ul>
+                <li>正規雇用率が他世代比10ポイント低い（総務省統計局、2023年）</li>
+                <li>平均年収が同年齢時の前世代比85%（厚生労働省賃金構造基本統計調査）</li>
+                <li>私立芸術系4年間の学費（700-800万円）が世帯年収を超えるケースが増加</li>
+            </ul>
+            <p>→ 結果：「自宅通学可能な大学」への志向が強まり、地方大学の演劇系学科は存続危機に</p>
+        </div>
+        
+        <div class="highlight-box" style="margin-top: 30px;">
+            <h3>結論：多様性の中での差別化</h3>
+            <p>人口減少と市場変化の中で、各大学は明確な特色を打ち出す必要に迫られています。「総花的」な教育から「尖った」教育へ、中途半端なポジショニングは淘汰される時代に入りました。実技重視か理論重視か、プロ養成か教養教育か、各大学の選択が問われています。</p>
+        </div>
+        
+        <span class="slide-number">7</span>
+    </div>
+    
+    <script>
+        // グラフの初期化を安全に行う関数
+        function initializeCharts() {
+            // Chart.js設定
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded');
+                return;
+            }
+            
+            Chart.defaults.font.family = "'Helvetica Neue', Arial, sans-serif";
+            
+            // 人口推計グラフ
+            const ctx1 = document.getElementById('populationProjection');
+            if (ctx1 && ctx1.getContext) {
+                try {
+                    new Chart(ctx1.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['2023年', '2025年', '2030年', '2035年', '2040年'],
+                            datasets: [{
+                                label: '18歳人口（万人）',
+                                data: [110, 106, 100, 96, 82],
+                                borderColor: '#E94F8A',
+                                backgroundColor: 'rgba(233, 79, 138, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }, {
+                                label: '大学進学者数（推計・万人）',
+                                data: [70, 68, 64, 61, 50],
+                                borderColor: '#00A8B5',
+                                backgroundColor: 'rgba(0, 168, 181, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: '人口（万人）'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('Chart 1 error:', e);
+                }
+            }
+        }
+        
+        // Chart.jsの読み込みを待ってから実行
+        window.addEventListener('load', function() {
+            setTimeout(initializeCharts, 100);
+        });
+    </script>
+</body>
+</html>
